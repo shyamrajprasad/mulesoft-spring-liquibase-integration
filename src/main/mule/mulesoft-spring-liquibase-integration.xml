@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:spring="http://www.mulesoft.org/schema/mule/spring" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/spring/current/mule-spring.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <spring:config name="Spring_Config" doc:name="Spring Config" doc:id="17d78e0a-96aa-4d00-89be-9dfe7e1ca2a9" files="spring-config.xml" />
+  <configuration-properties doc:name="Configuration properties" doc:id="faaaadbc-7c2c-48a6-b5fa-c41f61cad05c" file="application.properties" />
+  <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a93acff7-6136-4fbb-b649-e49ed645f659" >
+    <http:listener-connection host="0.0.0.0" port="8081" />
+  </http:listener-config>
+  <db:config name="Database_Config" doc:name="Database Config" doc:id="105017c4-524a-4bd4-b29b-c487d98bdfad" >
+    <db:generic-connection url="${spring.datasource.url}" user="${spring.datasource.username}" password="${spring.datasource.password}" driverClassName="org.postgresql.Driver"/>
+  </db:config>
+  <flow name="mulesoft-spring-liquibase-integrationFlow" doc:id="6df239fd-d739-4f3a-8d07-a2609be4b2c5" >
+    <http:listener doc:name="Listener" doc:id="a5e13bdc-f47c-40dd-964f-bf30290f6a6c" config-ref="HTTP_Listener_config" path="/accounts"/>
+    <db:select doc:name="Select" doc:id="54b3bf27-fad8-49b4-8ab9-9b3087d42278" config-ref="Database_Config">
+      <db:sql ><![CDATA[select * from accounts;]]></db:sql>
+    </db:select>
+    <ee:transform doc:name="Transform Message" doc:id="e30df911-c482-48f6-b2f1-f32cd569e501" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+</mule>
