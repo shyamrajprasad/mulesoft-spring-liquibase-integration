@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <http:listener-connection host="0.0.0.0" port="8081" />
   </http:listener-config>
   <db:config name="Database_Config" doc:name="Database Config" doc:id="105017c4-524a-4bd4-b29b-c487d98bdfad" >
-    <db:generic-connection url="${spring.datasource.url}" user="${spring.datasource.username}" password="${spring.datasource.password}" driverClassName="org.postgresql.Driver"/>
+    <db:data-source-connection dataSourceRef="dataSource"/>
   </db:config>
   <flow name="mulesoft-spring-liquibase-integrationFlow" doc:id="6df239fd-d739-4f3a-8d07-a2609be4b2c5" >
     <http:listener doc:name="Listener" doc:id="a5e13bdc-f47c-40dd-964f-bf30290f6a6c" config-ref="HTTP_Listener_config" path="/accounts"/>
